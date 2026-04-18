@@ -2,20 +2,7 @@
 
 An AI-powered resume analyzer that compares your resume against a job description and returns a match score, missing skills, keyword matches, and improvement suggestions — built with Spring Boot + React + Gemini AI.
 
----
 
-## 🗺️ Task Roadmap
-
-| # | Task | Status |
-|---|------|--------|
-| 1 | Project setup — Spring Boot + React boilerplate | ✅ Done |
-| 2 | PDF upload + text extraction (PDFBox) | ⬜ Next |
-| 3 | AI API integration (Gemini API) | ⬜ |
-| 4 | Match score logic + REST APIs | ⬜ |
-| 5 | React UI — upload form + results page | ⬜ |
-| 6 | JWT Auth + user history | ⬜ |
-| 7 | Dashboard + charts | ⬜ |
-| 8 | Testing + deployment (Railway/Vercel) | ⬜ |
 
 ---
 
@@ -95,7 +82,7 @@ Create `backend/src/main/resources/application-dev.properties` overrides, or set
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `GEMINI_API_KEY` | Google Gemini API key | (required for Task 3) |
+| `GEMINI_API_KEY` | Google Gemini API key | 
 | `DATABASE_URL` | PostgreSQL URL | H2 in dev |
 | `DATABASE_USERNAME` | DB username | sa |
 | `DATABASE_PASSWORD` | DB password | (empty) |
@@ -118,13 +105,3 @@ Get a free Gemini API key at: https://aistudio.google.com/app/apikey
 
 ---
 
-## 🐙 Git Commit Convention
-
-Each task gets its own commit:
-
-```bash
-git commit -m "task-1: project setup — Spring Boot + React boilerplate"
-git commit -m "task-2: PDF upload and text extraction with PDFBox"
-git commit -m "task-3: Gemini AI API integration"
-# etc.
-```
