@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { FileText } from 'lucide-react';
+import { FileText, Mail, Lock, Sparkles, Target, WandSparkles } from 'lucide-react';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -26,15 +26,24 @@ export default function LoginPage() {
 
   return (
     <div className="auth-page">
+      <section className="auth-showcase">
+        <div className="auth-showcase-chip"><Sparkles size={14} /> Career-grade resume scoring</div>
+        <h1>Land interviews with a resume that actually matches the role.</h1>
+        <p>ResumeIQ compares your resume to job requirements, highlights missing skills, and tells you exactly what to improve.</p>
+        <div className="auth-showcase-points">
+          <div><Target size={16} /> Instant match scoring</div>
+          <div><WandSparkles size={16} /> Practical AI suggestions</div>
+        </div>
+      </section>
       <div className="auth-card">
         <div className="auth-logo">
           <FileText size={36} />
-          <h1>ResumeAI</h1>
+          <h1>ResumeIQ</h1>
           <p>Sign in to your account</p>
         </div>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label>Email</label>
+            <label><Mail size={14} /> Email</label>
             <input
               type="email"
               placeholder="you@example.com"
@@ -44,7 +53,7 @@ export default function LoginPage() {
             />
           </div>
           <div className="form-group">
-            <label>Password</label>
+            <label><Lock size={14} /> Password</label>
             <input
               type="password"
               placeholder="••••••••"
@@ -58,7 +67,7 @@ export default function LoginPage() {
           </button>
         </form>
         <p className="auth-footer">
-          Don't have an account? <Link to="/register">Create one</Link>
+          Do not have an account? <Link to="/register">Create one</Link>
         </p>
       </div>
     </div>

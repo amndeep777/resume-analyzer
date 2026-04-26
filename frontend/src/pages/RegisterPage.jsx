@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { FileText } from 'lucide-react';
+import { FileText, UserRound, Mail, Lock, Sparkles, BadgeCheck, Shapes } from 'lucide-react';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -30,15 +30,24 @@ export default function RegisterPage() {
 
   return (
     <div className="auth-page">
+      <section className="auth-showcase">
+        <div className="auth-showcase-chip"><Sparkles size={14} /> Build smarter resumes</div>
+        <h1>Start scoring your resume like hiring teams do.</h1>
+        <p>Create your account and track resume improvements over time with role-specific insights and skill-gap analysis.</p>
+        <div className="auth-showcase-points">
+          <div><BadgeCheck size={16} /> Track every analysis in history</div>
+          <div><Shapes size={16} /> Clear missing-skill insights</div>
+        </div>
+      </section>
       <div className="auth-card">
         <div className="auth-logo">
           <FileText size={36} />
-          <h1>ResumeAI</h1>
+          <h1>ResumeIQ</h1>
           <p>Create your account</p>
         </div>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label>Username</label>
+            <label><UserRound size={14} /> Username</label>
             <input
               type="text"
               placeholder="johndoe"
@@ -49,7 +58,7 @@ export default function RegisterPage() {
             />
           </div>
           <div className="form-group">
-            <label>Email</label>
+            <label><Mail size={14} /> Email</label>
             <input
               type="email"
               placeholder="you@example.com"
@@ -59,7 +68,7 @@ export default function RegisterPage() {
             />
           </div>
           <div className="form-group">
-            <label>Password</label>
+            <label><Lock size={14} /> Password</label>
             <input
               type="password"
               placeholder="Min. 6 characters"

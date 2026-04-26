@@ -1,12 +1,25 @@
 import { useState, useRef } from 'react';
 import { resumeAPI } from '../api/resume';
 import toast from 'react-hot-toast';
-import { Upload, FileText, Briefcase, CheckCircle, XCircle, Lightbulb, BarChart2 } from 'lucide-react';
+import {
+  Upload,
+  FileText,
+  Briefcase,
+  CheckCircle,
+  XCircle,
+  Lightbulb,
+  BarChart2,
+  ScanSearch,
+  Gauge,
+  ClipboardList,
+  Sparkles,
+} from 'lucide-react';
 
 export default function DashboardPage() {
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
   const [result, setResult] = useState(null);
+  const [activeResultTab, setActiveResultTab] = useState('overview');
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef();
 
@@ -27,6 +40,7 @@ export default function DashboardPage() {
 
     setLoading(true);
     setResult(null);
+    setActiveResultTab('overview');
     try {
       const formData = new FormData();
       formData.append('resume', file);
@@ -47,17 +61,18 @@ export default function DashboardPage() {
     return '#ef4444';
   };
 
+  const scoreBand = result?.matchScore >= 75 ? 'Strong match' : result?.matchScore >= 50 ? 'Could be improved' : 'Needs significant updates';
+  const jdWordCount = jobDescription.trim() ? jobDescription.trim().split(/\s+/).length : 0;
+
   return (
     <div className="page-container">
       <div className="page-header">
-        <h1>Analyze Resume</h1>
-        <p>Upload your resume and paste a job description to get an AI-powered match score.</p>
+        <h1><ScanSearch size={24} /> Resume Analyzer Studio</h1>
+        <p>Upload your resume, drop in a job post, and get a role-fit score with targeted improvement guidance.</p>
       </div>
 
       <div className="analyze-grid">
-        {/* Upload Form */}
         <form onSubmit={handleSubmit} className="analyze-form">
-          {/* PDF Drop Zone */}
           <div
             className={`dropzone ${file ? 'dropzone--active' : ''}`}
             onDragOver={(e) => e.preventDefault()}
@@ -86,7 +101,23 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {/* Job Description */}
+          <div className="analysis-metrics">
+            <div className="mini-metric-card">
+              <ClipboardList size={16} />
+              <div>
+                <strong>{jdWordCount}</strong>
+                <span>job description words</span>
+              </div>
+            </div>
+            <div className="mini-metric-card">
+              <FileText size={16} />
+              <div>
+                <strong>{file ? 'Attached' : 'Missing'}</strong>
+                <span>resume file status</span>
+              </div>
+            </div>
+          </div>
+
           <div className="form-group">
             <label><Briefcase size={15} /> Job Description</label>
             <textarea
@@ -96,6 +127,7 @@ export default function DashboardPage() {
               rows={10}
               required
             />
+            <small className="field-hint">Tip: include responsibilities, requirements, and preferred skills for better scoring.</small>
           </div>
 
           <button type="submit" className="btn-primary btn-large" disabled={loading}>
@@ -107,12 +139,11 @@ export default function DashboardPage() {
           </button>
         </form>
 
-        {/* Results Panel */}
         <div className="results-panel">
           {!result && !loading && (
             <div className="results-empty">
               <BarChart2 size={48} color="#334155" />
-              <p>Your analysis results will appear here</p>
+              <p>Your score dashboard will appear here</p>
             </div>
           )}
 
@@ -125,7 +156,6 @@ export default function DashboardPage() {
 
           {result && (
             <div className="results-content">
-              {/* Score */}
               <div className="score-card">
                 <div
                   className="score-circle"
@@ -134,6 +164,9 @@ export default function DashboardPage() {
                   <span className="score-number">{result.matchScore}%</span>
                   <span className="score-label">Match</span>
                 </div>
+                <p className="score-band" style={{ color: scoreColor(result.matchScore) }}>
+                  <Gauge size={16} /> {scoreBand}
+                </p>
                 <div className="score-bar-container">
                   <div
                     className="score-bar"
@@ -145,36 +178,76 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Matched Keywords */}
-              {result.matchedKeywords?.length > 0 && (
+              <div className="results-tabs">
+                <button
+                  type="button"
+                  className={activeResultTab === 'overview' ? 'active' : ''}
+                  onClick={() => setActiveResultTab('overview')}
+                >
+                  Overview
+                </button>
+                <button
+                  type="button"
+                  className={activeResultTab === 'skills' ? 'active' : ''}
+                  onClick={() => setActiveResultTab('skills')}
+                >
+                  Skills
+                </button>
+                <button
+                  type="button"
+                  className={activeResultTab === 'suggestions' ? 'active' : ''}
+                  onClick={() => setActiveResultTab('suggestions')}
+                >
+                  Suggestions
+                </button>
+              </div>
+
+              {activeResultTab === 'overview' && (
                 <div className="result-section">
-                  <h3><CheckCircle size={16} color="#22c55e" /> Matched Keywords</h3>
-                  <div className="tag-list">
-                    {result.matchedKeywords.map((k, i) => (
-                      <span key={i} className="tag tag--green">{k}</span>
-                    ))}
+                  <h3><Sparkles size={16} color="#70f0b6" /> Snapshot</h3>
+                  <div className="overview-grid">
+                    <div className="overview-card">
+                      <span>Matched keywords</span>
+                      <strong>{result.matchedKeywords?.length || 0}</strong>
+                    </div>
+                    <div className="overview-card">
+                      <span>Missing skills</span>
+                      <strong>{result.missingSkills?.length || 0}</strong>
+                    </div>
+                    <div className="overview-card">
+                      <span>Suggestions</span>
+                      <strong>{result.suggestions?.length || 0}</strong>
+                    </div>
                   </div>
                 </div>
               )}
 
-              {/* Missing Skills */}
-              {result.missingSkills?.length > 0 && (
-                <div className="result-section">
-                  <h3><XCircle size={16} color="#ef4444" /> Missing Skills</h3>
-                  <div className="tag-list">
-                    {result.missingSkills.map((s, i) => (
-                      <span key={i} className="tag tag--red">{s}</span>
-                    ))}
+              {activeResultTab === 'skills' && (
+                <div className="skills-grid">
+                  <div className="result-section">
+                    <h3><CheckCircle size={16} color="#70f0b6" /> Matched Keywords</h3>
+                    <div className="tag-list">
+                      {result.matchedKeywords?.length ? result.matchedKeywords.map((k, i) => (
+                        <span key={i} className="tag tag--green">{k}</span>
+                      )) : <span className="empty-text">No matched keywords detected.</span>}
+                    </div>
+                  </div>
+                  <div className="result-section">
+                    <h3><XCircle size={16} color="#ff4f6d" /> Missing Skills</h3>
+                    <div className="tag-list">
+                      {result.missingSkills?.length ? result.missingSkills.map((s, i) => (
+                        <span key={i} className="tag tag--red">{s}</span>
+                      )) : <span className="empty-text">No critical missing skills found.</span>}
+                    </div>
                   </div>
                 </div>
               )}
 
-              {/* Suggestions */}
-              {result.suggestions?.length > 0 && (
+              {activeResultTab === 'suggestions' && (
                 <div className="result-section">
-                  <h3><Lightbulb size={16} color="#f59e0b" /> Suggestions</h3>
+                  <h3><Lightbulb size={16} color="#f8bb33" /> Suggestions</h3>
                   <ul className="suggestions-list">
-                    {result.suggestions.map((s, i) => (
+                    {(result.suggestions?.length ? result.suggestions : ['No suggestions available for this analysis.']).map((s, i) => (
                       <li key={i}>{s}</li>
                     ))}
                   </ul>
